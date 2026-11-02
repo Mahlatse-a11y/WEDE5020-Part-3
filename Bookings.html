@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookings</title>
+
+</head><link rel="stylesheet" href="My style.css">
+<body>
+     <header>
+        <nav>
+                <a href="Contact Us.html">Contact Us</a>
+                <a href="About Us.html">About Us</a>
+                <a href="Tips&Blogs.html">Tips&Blogs</a>
+        </nav>
+    </header>
+    <div>
+    <table class="container">
+    <tr>
+        <td>
+            <h1>Book Your Appointment</h1>
+            <h2 class="info">Select a date to see available times</h2>
+
+            <input type="date" class="date-picker" id="datePicker">
+
+            <h2 >Available Times</h2>
+            <div class="times-grid" id="timesGrid">
+                
+
+            </div>
+
+            <button class="btn" id="bookBtn" onclick="bookAppointment()" disabled>Book now</button>
+
+            <table id="successMsg" class="success" width="100%" style="display:none;">
+                <tr>
+                    <td>Booking Confirmed! <br> <span id="bookingDetails"></span></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+            <script src="receipt.js"></script>
+<script>
+// 1. CONFIGURE YOUR UNAVAILABLE SLOTS
+// In real life this comes from your database. For now we simulate.
+const BOOKED_KEY = 'salonBookedSlots'; // e.g. ["2026-05-13_09:00", "2026-05-13_14:00"]
+
+function getBookedSlots() {
+  return JSON.parse(localStorage.getItem(BOOKED_KEY) || '["2026-05-13_10:00", "2026-05-13_13:00", "2026-05-13_15:30"]');
+}
+
+let selectedSlot = null;
+
+const dateInput = document.getElementById('bookingDate');
+// Set default to today
+dateInput.valueAsDate = new Date();
+dateInput.addEventListener('change', generateSlots);
+
+function generateSlots() {
+  const container = document.getElementById('slots');
+  container.innerHTML = '';
+  selectedSlot = null;
+  document.getElementById('confirmBtn').style.display = 'none';
+
+  const selectedDate = dateInput.value; // e.g. 2026-05-13
+  if(!selectedDate) return;
+
+  const booked = getBookedSlots();
+
+  // Generate slots from 8am to 6pm every 60 minutes (you can change to 30 mins)
+  for(let hour = 8; hour < 18; hour++) {
+    for(let min of [0, 30]) { // 8:00, 8:30, 9:00... Remove this loop if you want only hourly
+      if(hour === 17 && min === 30) continue; // stop at 17:30 if you want last slot to end by 18:00
+      
+      const timeString = `${String(hour).padStart(2,'0')}:${String(min).padStart(2,'0')}`;
+      const slotId = `${selectedDate}_${timeString}`;
+      const isBooked = booked.includes(slotId);
+
+      const div = document.createElement('div');
+      div.className = `slot ${isBooked ? 'unavailable' : 'available'}`;
+      div.textContent = isBooked ? `${timeString} - Booked` : timeString;
+      
+      if(!isBooked) {
+        div.onclick = () => selectSlot(div, selectedDate, timeString);
+      }
+      container.appendChild(div);
+    }
+  }
+}
+
+function selectSlot(element, date, time) {
+  // Remove previous selection
+  document.querySelectorAll('.slot').forEach(s => s.classList.remove('selected'));
+  element.classList.add('selected');
+  selectedSlot = { date, time };
+  document.getElementById('confirmBtn').style.display = 'block';
+}
+
+function confirmBooking() {
+  if(!selectedSlot) return;
+  
+  // 2. THIS ADDS IT TO THE CHECKOUT RECEIPT
+  addToReceipt('bookings', {
+    id: `book_${selectedSlot.date}_${selectedSlot.time}`,
+    name: 'Salon Appointment',
+    price: 100, // booking deposit - change as needed
+    details: `${selectedSlot.date} at ${selectedSlot.time}`
+  });
+
+  // 3. Mark as booked (so it shows unavailable next time)
+  const booked = getBookedSlots();
+  booked.push(`${selectedSlot.date}_${selectedSlot.time}`);
+  localStorage.setItem(BOOKED_KEY, JSON.stringify(booked));
+
+  alert(`Locked in: ${selectedSlot.date} at ${selectedSlot.time} added to your receipt!`);
+  generateSlots(); // refresh to show as booked
+}
+
+// Load on start
+generateSlots();
+</script>
+       
+</div>
+</body>
+</html>

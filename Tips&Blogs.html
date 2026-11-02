@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tips&Blogs</title>
+    <link rel="stylesheet" href="My style.css">
+</head>
+<body>
+    <header>
+        <nav>
+                <a href="Contact Us.html">Contact Us</a>
+                <a href="About Us.html">About Us</a>
+                <a href="Tips&Blogs.html"></a>
+        </nav>
+<table class="container">
+    <tr>
+        <td>
+            <h1>Haircare Community</h1>
+            <h2 align="center">Tips, Questions, Transformations & Reviews</h2>
+
+           <!-- TABS -->
+            < table class="tabs" width="100%">
+                <tr>
+                    <td class="tab active" onclick="openTab('tips')">Hair Tips</td>
+                    <td class="tab" onclick="openTab('questions')">Ask a Question</td>
+                    <td class="tab" onclick="openTab('transformations')">Transformations</td>
+                    <td class="tab" onclick="openTab('reviews')">Reviews</td>
+                </tr>
+            </table>
+
+            <!-- 1. HAIR TIPS / BLOG -->
+            <table class="tab-content active" id="tips" width="100%">
+                <tr>
+                    <td>
+                        <h2>Weekly Hair Tips</h2>
+                        <div class="blog-tip">
+                            <h3>Tip 1: Deep Conditioning</h3>
+                            <p>Use a deep conditioner once a week to keep hair hydrated and prevent breakage. Leave it in for 20 minutes under a shower cap.</p>
+                        </div>
+                        <div class="blog-tip">
+                            <h3>Tip 2: Heat Protection</h3>
+                            <p>Always spray heat protectant before blow-drying or straightening. It reduces damage by up to 50%.</p>
+                        </div>
+                        <div class="blog-tip">
+                            <h3>Tip 3: Scalp Massage</h3>
+                            <p>Massage your scalp for 5 minutes daily with oil to boost blood circulation and hair growth.</p>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+            <!-- 2. ASK QUESTIONS -->
+            <table class="tab-content" id="questions" width="100%">
+                <tr>
+                    <td>
+                        <div class="post-form">
+                            <h3>Ask the Community</h3>
+                            <input type="text" id="qUser" placeholder="Your Name">
+                            <textarea id="qText" placeholder="What haircare question do you have?" rows="3"></textarea>
+                            <button class="btn" onclick="postQuestion()">Post Question</button>
+                        </div>
+                        <div id="questionsList"></div>
+                    </td>
+                </tr>
+            </table>
+
+            <!-- 3. BEFORE & AFTER -->
+            <table class="tab-content" id="transformations" width="100%">
+                <tr>
+                    <td>
+                        <div class="post-form">
+                            <h3>Share Your Transformation</h3>
+                            <input type="text" id="tUser" placeholder="Your Name">
+                            <input type="file" id="beforeImg" accept="image/*">
+                            <input type="file" id="afterImg" accept="image/*">
+                            <textarea id="tCaption" placeholder="Tell us about your hair journey..." rows="2"></textarea>
+                            <button class="btn" onclick="postTransformation()">Post Transformation</button>
+                        </div>
+                        <div id="transformationsList"></div>
+                    </td>
+                </tr>
+            </table>
+
+            <!-- 4. REVIEWS -->
+            <table class="tab-content" id="reviews" width="100%">
+                <tr>
+                    <td>
+                        <div class="post-form">
+                            <h3>Leave a Review</h3>
+                            <input type="text" id="rUser" placeholder="Your Name">
+                            <select id="rStars">
+                                <option value="5">⭐⭐⭐⭐⭐ 5 Stars</option>
+                                <option value="4">⭐⭐⭐⭐ 4 Stars</option>
+                                <option value="3">⭐⭐⭐ 3 Stars</option>
+                                <option value="2">⭐⭐ 2 Stars</option>
+                                <option value="1">⭐ 1 Star</option>
+                            </select>
+                            <textarea id="rText" placeholder="How was your experience at Glamour Cuts?" rows="3"></textarea>
+                            <button class="btn" onclick="postReview()">Post Review</button>
+                        </div>
+                        <div id="reviewsList"></div>
+                    </td>
+                </tr>
+            </table>
+            <div id="reviews"></div>
+<form id="reviewForm">
+  <input id="reviewName" placeholder="Your Name" required>
+  <textarea id="reviewText" placeholder="How did your transformation make you feel?" required></textarea>
+  <label>Before Photo <input type="file" id="beforePic" accept="image/*"></label>
+  <label>After Photo <input type="file" id="afterPic" accept="image/*"></label>
+  <button type="submit">Share Your Glow</button>
+</form>
+
+<script>
+const REVIEWS_KEY = 'glowReviews';
+
+document.getElementById('reviewForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const toBase64 = file => new Promise(r => {
+    const reader = new FileReader(); reader.onload = () => r(reader.result); reader.readAsDataURL(file);
+  });
+
+  const review = {
+    name: document.getElementById('reviewName').value,
+    text: document.getElementById('reviewText').value,
+    before: document.getElementById('beforePic').files[0] ? await toBase64(document.getElementById('beforePic').files[0]) : null,
+    after: document.getElementById('afterPic').files[0] ? await toBase64(document.getElementById('afterPic').files[0]) : null,
+    date: new Date().toLocaleDateString()
+  };
+
+  const reviews = JSON.parse(localStorage.getItem(REVIEWS_KEY) || '[]');
+  reviews.push(review);
+  localStorage.setItem(REVIEWS_KEY, JSON.stringify(reviews));
+  renderReviews();
+});
+
+function renderReviews() {
+  const reviews = JSON.parse(localStorage.getItem(REVIEWS_KEY) || '[]');
+  document.getElementById('reviews').innerHTML = reviews.map(r => `
+    <div class="review-card">
+      <h4>${r.name} - ${r.date}</h4>
+      <p>${r.text}</p>
+      <div class="before-after">
+        ${r.before ? `<img src="${r.before}" width="120"><span>Before</span>` : ''}
+        ${r.after ? `<img src="${r.after}" width="120"><span>After</span>` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+// Also for Questions
+// You can use same pattern but save to 'salonQuestions' key
+</script>
+           
+</body>
+</html>

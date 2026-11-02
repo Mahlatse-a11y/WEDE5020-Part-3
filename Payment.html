@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment</title>
+    <link rel="stylesheet" href="My style.css">
+</head>
+<body>
+    <table class="container">
+    <tr>
+        <td>
+            <h1>Payment</h1>
+            <p align="center">Order Code: <strong id="orderCode">MM-XXXXXX</strong></p>
+
+            <!-- TOTAL -->
+            <table class="total-box" width="100%">
+                <tr>
+                    <td>
+                        <p>Amount Due</p>
+                        <div class="amount" id="totalAmount">R0.00</div>
+                    </td>
+                </tr>
+            </table>
+
+            <!-- PAYMENT METHOD -->
+            <h2>Choose Payment Method</h2>
+            <table class="payment-options" width="100%">
+                <tr>
+                    <td>
+                        <label class="option" id="cashOption">
+                            <input type="radio" name="payment" value="cash" checked>
+                            Cash
+                            <p>Pay at the salon</p>
+                        </label>
+                    </td>
+                    <td>
+                        <label class="option" id="cardOption">
+                            <input type="radio" name="payment" value="card">
+                            Card
+                            <p>Debit / Credit Card</p>
+                        </label>
+                    </td>
+                </tr>
+            </table>
+
+            <!-- CARD FORM -->
+            <form id="paymentForm" onsubmit="processPayment(event)">
+                <table class="card-form" id="cardForm" width="100%">
+                    <tr><td><h3>Enter Card Details</h3></td></tr>
+                    <tr><td><input type="text" id="cardName" placeholder="Name on Card" required></td></tr>
+                    <tr><td><input type="text" id="cardNumber" placeholder="Card Number: 1234 5678 9012 3456" maxlength="19" required></td></tr>
+                    <tr>
+                        <td>
+                            <table width="100%">
+                                <tr>
+                                    <td><input type="text" id="expiry" placeholder="MM/YY" maxlength="5" required></td>
+                                    <td><input type="text" id="cvv" placeholder="CVV" maxlength="3" required></td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr><td><div class="error" id="cardError">Please fill all card details correctly</div></td></tr>
+                </table>
+
+                <button type="submit" class="btn" id="payBtn">Pay Now</button>
+            </form>
+
+            <!-- SUCCESS MESSAGE -->
+            <table id="successMsg" class="success" width="100%" style="display:none;">
+                <tr>
+                    <td align="center">Payment Successful! <br> Order is confirmed. Please keep your order code.</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+<script>
+    // With Paystack
+function payWithPaystack() {
+  const total = localStorage.getItem('receiptTotal') * 100; // in cents
+  let handler = PaystackPop.setup({
+    key: 'YOUR_PUBLIC_KEY',
+    email: 'customer@email.com',
+    amount: total,
+    currency: 'ZAR',
+    callback: function(response){
+      alert('Payment successful! Reference: ' + response.reference);
+      // Generate PDF receipt
+      generatePDFReceipt();
+      localStorage.removeItem(RECEIPT_KEY);
+    }
+  });
+  handler.openIframe();
+}
+
+function generatePDFReceipt() {
+  const receipt = getReceipt();
+  // Use jsPDF library
+  // You have all data in one place now
+  console.log("Generating PDF for:", receipt);
+}
+</script>
+</body>
+</html>
