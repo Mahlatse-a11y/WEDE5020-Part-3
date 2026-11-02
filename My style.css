@@ -1,0 +1,175 @@
+* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --soft-grey:#E8E8E8;
+  --white:#FFFFFF;
+  --soft-pink:#E89BB0;
+  --sage:#9CAF88;
+  --dark:#2E2E2E;
+}
+
+html { background:var(--light-grey); }
+body {
+  background:var(--light-grey);
+  font-family:'Poppins', sans-serif;
+  line-height:1.7;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
+  min-height:100vh;
+  text-align:center;
+}
+main, section, .container {
+  background:var(--light-grey);
+  width:90%;
+  max-width:60rem;
+  margin:0 auto;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+}
+
+div {
+  background:var(--light-grey);
+  margin:0 auto; 
+  text-align:center;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+}
+.card, .blog-tip, .post-form, .tabs tr, table.container, table[align="center"] {
+  background:var(--white);
+  border-radius:1rem;
+  box-shadow:0 0.6rem 2rem rgba(0,0,0,0.06);
+  margin:1.5rem auto;
+  text-align:center;
+}
+
+
+h1, h2, h3, h4 {
+  color:var(--soft-pink);
+  font-family:'Playfair Display', serif;
+  text-align:center;
+  width:100%;
+}
+
+table.container, table.tabs, table[align="center"] {
+  margin-left:auto !important;
+  margin-right:auto !important;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+td, th { text-align:center; }
+
+
+picture {
+  display:inline-block; 
+  width:280px;
+  height:280px;
+  margin:0.6rem;
+  flex:0 0 280px;
+}
+
+picture img, picture source + img, .project-image, td img {
+  width:280px !important;
+  height:280px !important;
+  object-fit:cover !important;
+  border-radius:1rem;
+  display:block;
+}
+
+table.container tr {
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  align-items:center;
+  gap:1.2rem;
+  width:100%;
+}
+table.container td {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  flex:1 1 280px;
+}
+
+.gallery, .image-row {
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center; 
+  gap:1.2rem;
+  background:var(--soft-grey);
+  width:100%;
+  padding:1.5rem 0;
+}
+
+button, .btn, .tab.active {
+  background:var(--soft-pink);
+  color:var(--white);
+  border:none; padding:0.8rem 1.8rem; border-radius:2rem; font-weight:700; cursor:pointer;
+  margin:0 auto;
+input, textarea { text-align:left; width:100%; max-width:22rem; margin:0 auto; }
+
+@media screen and (max-width:768px) {
+  body, main, div { width:100%; padding:0 1rem; }
+  picture, picture img { width:200px !important; height:200px !important; flex:0 0 200px; }
+  table.container tr { flex-direction:row; justify-content:center; }
+}
+@media screen and (max-width:480px) {
+  picture, picture img { width:160px !important; height:160px !important; }
+  table.container tr { flex-direction:column; }
+}
+.picture-text:hover {
+  transform: scale(1.1);
+  box-shadow: 0 8px 20px rgba(232, 155, 176, 0.4); 
+}
+For your M&M Salon - when the mouse arrow hovers on text it zooms. Add this to your `style.css`:
+
+h1, h2, h3, p, a {
+  transition: transform 0.3s ease, color 0.3s ease;
+  display: inline-block; 
+}
+
+h1:hover, h2:hover, h3:hover {
+  transform: scale(1.1); 
+  color: #9CAF88; 
+}
+
+p:hover, a:hover {
+  transform: scale(1.05); 
+}
+.zoom-in-small:hover {
+  transform: scale(0.9);
+}
+### How to use it in your HTML:
+
+*Option 1 - All headings already zoom (no HTML change needed):*
+Just paste the CSS above. Your `<h1>Mission</h1>` will now zoom when arrow points at it.
+
+*Option 2 - Only specific text:*
+<h1 class="zoom-text">Mission</h1>
+<p class="zoom-text">Your paragraph text will zoom when arrow points</p>
+.zoom-text:hover {
+  transform: scale(1.15);
+}
+*For Services images + text together:*
+.picture-text:hover {
+  transform: scale(1.1);
+  box-shadow: 0 8px 20px rgba(232, 155, 176, 0.4);
+}
+.zoom-text:hover {
+  transform: scale(1.15);
+  .icons{
+    color: grey;
+  }
+.fa-brands fa-square-instagram{
+ color: rgb(241, 135, 236);
+  
+}
+.fa-brands fa-square-whatsapp fa-2xs{
+  color: rgb(2, 205, 0) ;
+}
